@@ -1,0 +1,103 @@
+/* Tailwind CSS directives — ignored by the standard CSS linter, processed by PostCSS at build time. */
+/* stylelint-disable */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white hover:bg-brand-700 focus:ring-brand-500;
+  }
+  .btn-secondary {
+    @apply btn bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 focus:ring-slate-300;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+  .input {
+    @apply w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
+  }
+  .card {
+    @apply rounded-lg border border-slate-200 bg-white shadow-sm;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+  .badge-blue {
+    @apply badge bg-brand-100 text-brand-700;
+  }
+  .badge-red {
+    @apply badge bg-red-100 text-red-700;
+  }
+  .badge-slate {
+    @apply badge bg-slate-100 text-slate-700;
+  }
+
+  /* ---------- Email list row (Gmail-style) ---------- */
+  .email-row {
+    @apply relative flex items-center gap-3 px-4 py-3 transition cursor-pointer
+           hover:bg-slate-50;
+  }
+  .email-row-unread {
+    @apply bg-brand-50/40 hover:bg-brand-50/60;
+  }
+  .email-row + .email-row {
+    /* hide the parent border on individual items, the parent card provides the divider */
+  }
+
+  /* Avatar circle */
+  .avatar {
+    @apply w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold
+           bg-slate-200 text-slate-600;
+  }
+  .avatar-unread {
+    @apply bg-brand-600 text-white;
+  }
+
+  /* Quick-action icon button on email rows */
+  .icon-btn {
+    @apply p-1.5 rounded-md text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition;
+  }
+  .icon-btn-danger {
+    @apply hover:text-red-600 hover:bg-red-50;
+  }
+
+  /* ---------- Pagination buttons ---------- */
+  .pager-btn {
+    @apply min-w-[2.25rem] h-9 px-2 inline-flex items-center justify-center rounded-md
+           text-sm font-medium border border-slate-200 bg-white text-slate-600
+           hover:bg-slate-50 hover:text-slate-900 transition
+           disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white;
+  }
+  .pager-btn-active {
+    @apply bg-brand-600 text-white border-brand-600 hover:bg-brand-700 hover:text-white;
+  }
+  .pager-btn-ellipsis {
+    @apply border-transparent bg-transparent hover:bg-transparent cursor-default;
+  }
+
+  /* ---------- Email body prose (rendered HTML) ---------- */
+  .prose {
+    @apply text-slate-800 leading-relaxed;
+  }
+  .prose a { @apply text-brand-600 underline underline-offset-2; }
+  .prose h1, .prose h2, .prose h3 { @apply font-semibold text-slate-900; }
+  .prose h1 { @apply text-xl mt-4 mb-2; }
+  .prose h2 { @apply text-lg mt-3 mb-1.5; }
+  .prose h3 { @apply text-base mt-3 mb-1.5; }
+  .prose p  { @apply my-2; }
+  .prose ul { @apply list-disc pl-6 my-2; }
+  .prose ol { @apply list-decimal pl-6 my-2; }
+  .prose img { @apply max-w-full h-auto rounded; }
+  .prose table { @apply border-collapse w-full my-3 text-sm; }
+  .prose th, .prose td { @apply border border-slate-200 px-2 py-1.5; }
+  .prose th { @apply bg-slate-50 font-semibold; }
+  .prose blockquote { @apply border-l-4 border-slate-200 pl-3 my-2 text-slate-600; }
+  .prose code { @apply bg-slate-100 px-1 py-0.5 rounded text-sm font-mono; }
+  .prose pre  { @apply bg-slate-900 text-slate-100 rounded-md p-3 overflow-x-auto text-sm; }
+  .prose pre code { @apply bg-transparent p-0 text-inherit; }
+  .prose hr { @apply my-4 border-slate-200; }
+}
