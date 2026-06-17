@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { useRouter, useRoute, RouterLink } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 
 const auth = useAuthStore();
@@ -47,9 +47,13 @@ async function submit() {
       </button>
     </form>
 
+    <!-- Registration is disabled. To re-enable, uncomment the RouterLink below
+         and restore the /register route in src/router/index.js. -->
+    <!--
     <p class="text-sm text-slate-500 mt-4 text-center">
       New here?
       <RouterLink :to="{ name: 'register' }" class="text-brand-600 hover:underline">Create an account</RouterLink>
     </p>
+    -->
   </div>
 </template>

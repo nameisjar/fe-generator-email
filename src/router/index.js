@@ -5,7 +5,10 @@ import { useAuthStore } from '../stores/auth';
 
 const routes = [
   { path: '/login', name: 'login', component: () => import('../views/LoginView.vue'), meta: { public: true } },
-  { path: '/register', name: 'register', component: () => import('../views/RegisterView.vue'), meta: { public: true } },
+  // Registration is disabled. Anyone hitting /register is redirected to login.
+  // To re-enable, change this to:
+  //   { path: '/register', name: 'register', component: () => import('../views/RegisterView.vue'), meta: { public: true } },
+  { path: '/register', redirect: '/login' },
   { path: '/', name: 'dashboard', component: () => import('../views/DashboardView.vue') },
   { path: '/aliases', name: 'aliases', component: () => import('../views/AliasListView.vue') },
   { path: '/aliases/:id', name: 'alias-inbox', component: () => import('../views/InboxView.vue'), props: true },
