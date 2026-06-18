@@ -33,16 +33,21 @@ api.interceptors.response.use(
   (r) => r,
   async (error) => {
     const { response, config } = error;
-    const requestPath = config?.url || '';
-    const shouldRefresh =
-      requestPath === '/auth/me' ||
-      requestPath === '/me' ||
-      requestPath.endsWith('/auth/me') ||
-      requestPath.endsWith('/me');
-
-    if (!response || response.status !== 401 || config._retry || requestPath === '/auth/refresh' || !shouldRefresh) {
+    if (!response || response.status !== 401 || config._retry) {
       throw error;
     }
+
+    // Jangan refresh pada endpoint credential — biar errornya langsung dikembalikan ke UI.
+    const requestPath = config?.url || '';
+    const isAuthCredentialCall =
+      requestPath.includes('/auth/login') ||
+      requestPath.includes('/auth/register') ||
+      requestPath.includes('/auth/logout') ||
+      requestPath.includes('/auth/refresh');
+    if (isAuthCredentialCall) {
+      throw error;
+    }
+
     config._retry = true;
     try {
       refreshing = refreshing || axios.post(`${baseURL}/auth/refresh`, null, { withCredentials: true });
