@@ -33,7 +33,14 @@ api.interceptors.response.use(
   (r) => r,
   async (error) => {
     const { response, config } = error;
-    if (!response || response.status !== 401 || config._retry || config.url === '/auth/refresh') {
+    const requestPath = config?.url || '';
+    const shouldRefresh =
+      requestPath === '/auth/me' ||
+      requestPath === '/me' ||
+      requestPath.endsWith('/auth/me') ||
+      requestPath.endsWith('/me');
+
+    if (!response || response.status !== 401 || config._retry || requestPath === '/auth/refresh' || !shouldRefresh) {
       throw error;
     }
     config._retry = true;
