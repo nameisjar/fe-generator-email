@@ -7,19 +7,28 @@ import api from '../api';
 export const useAliasStore = defineStore('alias', () => {
   const items = ref([]);
   const pagination = ref({ page: 1, pageSize: 20, total: 0 });
+  const domains = ref([]);
+  const defaultDomain = ref('');
   const loading = ref(false);
   const error = ref(null);
 
-  async function fetchAll({ page = 1, pageSize = 20, search = '', activeOnly = false } = {}) {
+  async function fetchAll({ page = 1, pageSize = 20, search = '', activeOnly = false, domain = '' } = {}) {
     loading.value = true;
     error.value = null;
     try {
       const params = { page, pageSize };
       if (search) params.q = search;
       if (activeOnly) params.active = 'true';
+      if (domain) params.domain = domain;
       const { data } = await api.get('/aliases', { params });
       items.value = data.items;
       pagination.value = { page: data.page, pageSize: data.pageSize, total: data.total };
+      // Backend returns the allowed domains with every list call so the UI
+      // can stay in sync without an extra round-trip.
+      if (Array.isArray(data.domains)) {
+        domains.value = data.domains;
+        defaultDomain.value = data.defaultDomain || data.domains[0] || '';
+      }
       return data;
     } catch (err) {
       error.value = err.response?.data?.error?.message || err.message;
@@ -49,5 +58,5 @@ export const useAliasStore = defineStore('alias', () => {
     pagination.value.total = Math.max(0, pagination.value.total - 1);
   }
 
-  return { items, pagination, loading, error, fetchAll, create, update, remove };
+  return { items, pagination, domains, defaultDomain, loading, error, fetchAll, create, update, remove };
 });

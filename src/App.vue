@@ -14,7 +14,7 @@ auth.bootstrap();
       <RouterView />
     </main>
     <footer class="text-center text-xs text-slate-400 py-4">
-      Email Alias Manager · algonova.my.id
+      Email Alias Manager
     </footer>
   </div>
 </template>

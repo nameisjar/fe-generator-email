@@ -10,6 +10,7 @@ const aliasStore = useAliasStore();
 
 const newAddress = ref('');
 const newLabel = ref('');
+const newDomain = ref('');
 const creating = ref(false);
 const createError = ref('');
 const generatedRandom = ref(true);
@@ -33,6 +34,11 @@ async function load() {
     search: search.value,
     activeOnly: activeOnly.value,
   });
+  // Default the new-alias domain to the backend's default the first time we
+  // see the domain list, so users get a sensible selection immediately.
+  if (!newDomain.value && aliasStore.defaultDomain) {
+    newDomain.value = aliasStore.defaultDomain;
+  }
 }
 
 function reloadFromFirst() {
@@ -71,6 +77,7 @@ async function create() {
     await aliasStore.create({
       address: generatedRandom.value ? undefined : newAddress.value.trim() || undefined,
       label: newLabel.value.trim() || undefined,
+      domain: newDomain.value || undefined,
     });
     newAddress.value = '';
     newLabel.value = '';
@@ -92,7 +99,7 @@ onMounted(load);
   <div class="space-y-6">
     <header>
       <h1 class="text-2xl font-semibold text-slate-800">Aliases</h1>
-      <p class="text-sm text-slate-500">Generate and manage your email aliases on algonova.my.id.</p>
+      <p class="text-sm text-slate-500">Generate and manage your email aliases across {{ aliasStore.domains.join(', ') }}.</p>
     </header>
 
     <!-- Quick stats -->
@@ -118,7 +125,7 @@ onMounted(load);
     <section class="card p-5">
       <h2 class="text-base font-semibold text-slate-800 mb-3">Create a new alias</h2>
       <form @submit.prevent="create">
-        <div class="grid sm:grid-cols-[1fr_1fr] gap-3 mb-3">
+        <div class="grid sm:grid-cols-[1fr_1fr_auto] gap-3 mb-3 items-end">
           <div>
             <label class="block text-xs font-medium text-slate-600 mb-1">Local part</label>
             <div class="flex items-stretch rounded-md border border-slate-300 bg-white focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 overflow-hidden">
@@ -130,7 +137,7 @@ onMounted(load);
                 maxlength="30"
                 pattern="[a-z0-9](?:[a-z0-9._-]{1,28}[a-z0-9])?"
               />
-              <span class="px-3 py-2 text-sm text-slate-500 bg-slate-50 border-l border-slate-300">@algonova.my.id</span>
+              <span class="px-3 py-2 text-sm text-slate-500 bg-slate-50 border-l border-slate-300 font-mono">@{{ newDomain || aliasStore.defaultDomain || '…' }}</span>
             </div>
             <label class="inline-flex items-center gap-2 mt-2 text-xs text-slate-600 cursor-pointer select-none">
               <input
@@ -150,6 +157,17 @@ onMounted(load);
               maxlength="80"
             />
             <p class="text-xs text-slate-400 mt-2">For your own reference — not visible to senders.</p>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Domain</label>
+            <select
+              v-model="newDomain"
+              class="input font-mono"
+              :disabled="!aliasStore.domains.length"
+            >
+              <option v-for="d in aliasStore.domains" :key="d" :value="d">@{{ d }}</option>
+            </select>
+            <p class="text-xs text-slate-400 mt-2">Pick the domain this alias will live under.</p>
           </div>
         </div>
         <div class="flex items-center justify-between gap-3">
