@@ -155,24 +155,26 @@ onMounted(load);
       </div>
 
       </div>
-      <div class="relative border-t border-slate-100 bg-slate-50/60 p-4 sm:px-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input
-          v-model="searchInput"
-          @input="onSearchInput"
-          type="search"
-          class="input pl-9 pr-9"
-          placeholder="Cari subjek, pengirim, atau isi email…"
-        />
-        <button
-          v-if="searchInput"
-          @click="clearSearch"
-          class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
-          title="Hapus pencarian"
-          aria-label="Hapus pencarian"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
+      <div class="border-t border-slate-100 bg-slate-50/60 p-4 sm:px-6">
+        <div class="relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input
+            v-model="searchInput"
+            @input="onSearchInput"
+            type="search"
+            class="input pl-10 pr-10"
+            placeholder="Cari subjek, pengirim, atau isi email…"
+          />
+          <button
+            v-if="searchInput"
+            @click="clearSearch"
+            class="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            title="Hapus pencarian"
+            aria-label="Hapus pencarian"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
       </div>
     </div>
 
