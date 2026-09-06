@@ -22,6 +22,14 @@ async function load() {
   error.value = '';
   try {
     email.value = await emailStore.fetchOne(props.id);
+    if (!email.value.isRead) {
+      try {
+        await emailStore.markRead(email.value.id, true);
+        email.value.isRead = true;
+      } catch {
+        // Email tetap ditampilkan jika pembaruan status baca gagal.
+      }
+    }
   } catch (err) {
     error.value = err.response?.data?.error?.message || 'Email gagal dimuat.';
   } finally {
@@ -31,8 +39,9 @@ async function load() {
 
 async function toggleRead() {
   if (!email.value) return;
-  await emailStore.markRead(email.value.id, !email.value.isRead);
-  email.value.isRead = !email.value.isRead;
+  const nextIsRead = !email.value.isRead;
+  await emailStore.markRead(email.value.id, nextIsRead);
+  email.value.isRead = nextIsRead;
   toast.show(email.value.isRead ? 'Email ditandai sudah dibaca.' : 'Email ditandai belum dibaca.');
 }
 
