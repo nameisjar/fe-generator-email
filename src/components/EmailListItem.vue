@@ -3,100 +3,47 @@ import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import OtpHighlight from './OtpHighlight.vue';
 
-const props = defineProps({
-  email: { type: Object, required: true },
-});
+const props = defineProps({ email: { type: Object, required: true } });
 const emit = defineEmits(['toggle-read', 'remove']);
 
 const dateLabel = computed(() => {
-  const d = new Date(props.email.receivedAt);
-  const now = new Date();
-  const diffMs = now - d;
-  const diffMin = Math.floor(diffMs / 60_000);
-  const diffH = Math.floor(diffMs / 3_600_000);
-  const diffD = Math.floor(diffMs / 86_400_000);
-
-  if (diffMin < 1) return 'just now';
-  if (diffMin < 60) return `${diffMin}m ago`;
-  if (diffH < 24) return `${diffH}h ago`;
-  if (diffD < 7) return `${diffD}d ago`;
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: d.getFullYear() === now.getFullYear() ? undefined : 'numeric' });
+  const date = new Date(props.email.receivedAt);
+  const diffMinutes = Math.floor((Date.now() - date.getTime()) / 60_000);
+  if (diffMinutes < 1) return 'baru saja';
+  if (diffMinutes < 60) return `${diffMinutes} mnt`;
+  if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)} jam`;
+  if (diffMinutes < 10080) return `${Math.floor(diffMinutes / 1440)} hari`;
+  return date.toLocaleDateString('id-ID', { month: 'short', day: 'numeric', year: date.getFullYear() === new Date().getFullYear() ? undefined : 'numeric' });
 });
-
-const fullDate = computed(() => new Date(props.email.receivedAt).toLocaleString());
-
-const avatarLetter = computed(() => {
-  const source = props.email.fromName || props.email.fromAddress || '?';
-  return source.trim().charAt(0).toUpperCase();
-});
-
+const fullDate = computed(() => new Date(props.email.receivedAt).toLocaleString('id-ID'));
 const senderName = computed(() => props.email.fromName || props.email.fromAddress);
-const senderDomain = computed(() => {
-  const addr = props.email.fromAddress || '';
-  return addr.includes('@') ? addr.split('@')[1] : '';
-});
+const avatarLetter = computed(() => (senderName.value || '?').trim().charAt(0).toUpperCase());
 </script>
 
 <template>
-  <RouterLink
-    :to="{ name: 'email-detail', params: { id: email.id } }"
-    class="email-row group"
-    :class="{ 'email-row-unread': !email.isRead }"
-  >
-    <div class="flex items-start gap-3 min-w-0 flex-1">
-      <div
-        class="avatar shrink-0"
-        :class="{ 'avatar-unread': !email.isRead }"
-        :aria-hidden="true"
-      >
-        {{ avatarLetter }}
-      </div>
-
+  <article class="email-row group" :class="{ 'email-row-unread': !email.isRead }">
+    <RouterLink :to="{ name: 'email-detail', params: { id: email.id } }" class="flex min-w-0 flex-1 items-start gap-3 rounded-lg">
+      <div class="avatar shrink-0" :class="{ 'avatar-unread': !email.isRead }" aria-hidden="true">{{ avatarLetter }}</div>
       <div class="min-w-0 flex-1">
-        <div class="flex items-baseline gap-2 flex-wrap">
-          <p class="text-sm truncate" :class="email.isRead ? 'text-slate-700' : 'text-slate-900 font-semibold'">
-            {{ senderName }}
-          </p>
-          <span v-if="senderDomain && email.fromAddress !== senderName" class="text-xs text-slate-400 truncate">
-            &lt;{{ email.fromAddress }}&gt;
-          </span>
-          <span class="ml-auto text-xs text-slate-400 shrink-0" :title="fullDate">{{ dateLabel }}</span>
+        <div class="flex items-baseline gap-2">
+          <p class="truncate text-sm" :class="email.isRead ? 'text-slate-700' : 'font-semibold text-slate-900'">{{ senderName }}</p>
+          <time class="ml-auto shrink-0 text-xs text-slate-400" :title="fullDate">{{ dateLabel }}</time>
         </div>
-
-        <p class="text-sm truncate mt-0.5" :class="email.isRead ? 'text-slate-600' : 'text-slate-800 font-medium'">
-          {{ email.subject || '(no subject)' }}
-        </p>
-
-        <p v-if="email.snippet" class="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-          {{ email.snippet }}
-        </p>
-
+        <p class="mt-0.5 truncate text-sm" :class="email.isRead ? 'text-slate-600' : 'font-medium text-slate-800'">{{ email.subject || '(tanpa subjek)' }}</p>
+        <p v-if="email.snippet" class="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">{{ email.snippet }}</p>
         <OtpHighlight v-if="email.extractedCode" :code="email.extractedCode" class="mt-2" />
       </div>
-    </div>
+    </RouterLink>
 
-    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition shrink-0" @click.stop>
-      <button
-        class="icon-btn"
-        :title="email.isRead ? 'Mark as unread' : 'Mark as read'"
-        @click.prevent="emit('toggle-read', email)"
-      >
-        <svg v-if="!email.isRead" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"/></svg>
+    <div class="flex shrink-0 items-center gap-0.5 opacity-100 transition md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+      <button class="icon-btn" :title="email.isRead ? 'Tandai belum dibaca' : 'Tandai sudah dibaca'" :aria-label="email.isRead ? 'Tandai belum dibaca' : 'Tandai sudah dibaca'" @click="emit('toggle-read', email)">
+        <svg v-if="!email.isRead" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 10.6 13a2.4 2.4 0 0 0 2.8 0L21 7.5M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg>
+        <svg v-else class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m3 10 7.6-5.1a2.5 2.5 0 0 1 2.8 0L21 10v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8Zm0 1 7.6 5.1a2.5 2.5 0 0 0 2.8 0L21 11"/></svg>
       </button>
-      <button
-        class="icon-btn icon-btn-danger"
-        title="Delete"
-        @click.prevent="emit('remove', email)"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/></svg>
+      <button class="icon-btn icon-btn-danger" title="Hapus" aria-label="Hapus email" @click="emit('remove', email)">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10 11v6m4-6v6M4 7h16m-2 0-.8 12a2 2 0 0 1-2 2H8.8a2 2 0 0 1-2-2L6 7m3 0V4h6v3"/></svg>
       </button>
     </div>
-
-    <span
-      v-if="!email.isRead"
-      class="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brand-600"
-      aria-label="Unread"
-    />
-  </RouterLink>
+    <span v-if="!email.isRead" class="absolute left-1.5 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-brand-600" aria-label="Belum dibaca" />
+  </article>
 </template>

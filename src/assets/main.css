@@ -4,24 +4,45 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html { @apply scroll-smooth; }
+  body {
+    @apply min-h-screen bg-slate-50 text-slate-900 antialiased;
+    background-image: radial-gradient(circle at 8% 0%, rgba(29, 92, 242, 0.08), transparent 24rem);
+  }
+  button, a, input, select {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2;
+  }
+  ::selection { @apply bg-brand-100 text-brand-900; }
+}
+
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-brand-600 text-white hover:bg-brand-700 focus:ring-brand-500;
+    @apply btn bg-brand-600 text-white shadow-sm shadow-brand-600/20 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-md hover:shadow-brand-600/20;
   }
   .btn-secondary {
-    @apply btn bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 focus:ring-slate-300;
+    @apply btn border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50;
   }
   .btn-danger {
-    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+    @apply btn bg-red-600 text-white shadow-sm shadow-red-600/20 hover:bg-red-700;
   }
   .input {
-    @apply w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
+    @apply min-h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm transition placeholder:text-slate-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-100 focus:ring-offset-0;
   }
   .card {
-    @apply rounded-lg border border-slate-200 bg-white shadow-sm;
+    @apply rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-200/60;
+  }
+  .section-title {
+    @apply text-lg font-semibold tracking-tight text-slate-900;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.16em] text-brand-600;
+  }
+  .metric-card {
+    @apply card relative overflow-hidden p-5 transition duration-200 hover:-translate-y-0.5 hover:shadow-md;
   }
   .badge {
     @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
@@ -38,8 +59,7 @@
 
   /* ---------- Email list row (Gmail-style) ---------- */
   .email-row {
-    @apply relative flex items-center gap-3 px-4 py-3 transition cursor-pointer
-           hover:bg-slate-50;
+    @apply relative flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-slate-50/80;
   }
   .email-row-unread {
     @apply bg-brand-50/40 hover:bg-brand-50/60;
@@ -59,7 +79,7 @@
 
   /* Quick-action icon button on email rows */
   .icon-btn {
-    @apply p-1.5 rounded-md text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition;
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 transition hover:bg-brand-50 hover:text-brand-600;
   }
   .icon-btn-danger {
     @apply hover:text-red-600 hover:bg-red-50;

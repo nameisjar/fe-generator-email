@@ -22,5 +22,5 @@ const sanitizedHtml = computed(() => {
 <template>
   <div v-if="sanitizedHtml" class="prose prose-sm max-w-none" v-html="sanitizedHtml" />
   <pre v-else-if="text" class="whitespace-pre-wrap text-sm text-slate-700 font-sans">{{ text }}</pre>
-  <p v-else class="text-sm text-slate-400 italic">(empty body)</p>
+  <p v-else class="text-sm text-slate-400 italic">(isi email kosong)</p>
 </template>

@@ -30,7 +30,7 @@ async function copy() {
       class="text-xs text-amber-700 hover:text-amber-900 underline-offset-2 hover:underline font-medium"
       @click="copy"
     >
-      {{ copied ? '✓ Copied' : 'Copy' }}
+      {{ copied ? '✓ Disalin' : 'Salin' }}
     </button>
   </div>
 </template>

@@ -43,19 +43,19 @@ function go(p) {
 <template>
   <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
     <p class="text-sm text-slate-500">
-      <span v-if="total === 0">No results</span>
+      <span v-if="total === 0">Tidak ada hasil</span>
       <span v-else>
-        Showing <span class="font-medium text-slate-700">{{ start }}–{{ end }}</span>
-        of <span class="font-medium text-slate-700">{{ total }}</span>
+        Menampilkan <span class="font-medium text-slate-700">{{ start }}–{{ end }}</span>
+        dari <span class="font-medium text-slate-700">{{ total }}</span>
       </span>
     </p>
 
-    <nav v-if="totalPages > 1" class="flex items-center gap-1" aria-label="Pagination">
+    <nav v-if="totalPages > 1" class="flex items-center gap-1" aria-label="Paginasi">
       <button
         class="pager-btn"
         :disabled="page === 1 || loading"
         @click="go(page - 1)"
-        aria-label="Previous page"
+        aria-label="Halaman sebelumnya"
       >
         ←
       </button>
@@ -75,7 +75,7 @@ function go(p) {
         class="pager-btn"
         :disabled="page === totalPages || loading"
         @click="go(page + 1)"
-        aria-label="Next page"
+        aria-label="Halaman berikutnya"
       >
         →
       </button>

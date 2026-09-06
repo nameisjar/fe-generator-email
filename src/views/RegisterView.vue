@@ -9,15 +9,15 @@ import { RouterLink } from 'vue-router';
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
       </svg>
     </div>
-    <h1 class="text-xl font-semibold text-slate-800">Registration is disabled</h1>
+    <h1 class="text-xl font-semibold text-slate-800">Pendaftaran dinonaktifkan</h1>
     <p class="text-sm text-slate-500 mt-2">
-      Self-service account creation is not available on this instance.
+      Pembuatan akun mandiri tidak tersedia untuk aplikasi ini.
     </p>
     <RouterLink
       :to="{ name: 'login' }"
       class="btn-primary inline-flex mt-5"
     >
-      Back to sign in
+      Kembali ke halaman masuk
     </RouterLink>
   </div>
 </template>
