@@ -59,8 +59,8 @@ onMounted(load);
     <p v-else-if="error" class="card border-red-200 bg-red-50 p-4 text-sm text-red-700">{{ error }}</p>
 
     <template v-else-if="email">
-      <RouterLink :to="{ name: 'alias-inbox', params: { id: email.alias.id } }" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-brand-600"><span aria-hidden="true">←</span> Kembali ke kotak masuk</RouterLink>
-      <article class="card overflow-hidden">
+      <RouterLink :to="{ name: 'alias-inbox', params: { id: email.alias.id } }" class="mx-auto flex w-full max-w-5xl items-center gap-2 text-sm font-semibold text-slate-500 hover:text-brand-600"><span aria-hidden="true">←</span> Kembali ke kotak masuk</RouterLink>
+      <article class="card mx-auto w-full max-w-5xl overflow-hidden">
       <header class="border-b border-slate-100 p-5 sm:p-6">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div class="min-w-0">
