@@ -93,7 +93,7 @@ onMounted(load);
       </header>
 
       <div class="p-5 sm:p-6">
-        <OtpHighlight v-if="email.extractedCode" :code="email.extractedCode" class="mb-5" />
+        <OtpHighlight :code="email.extractedCode" :subject="email.subject" :text="email.bodyText" class="mb-5" />
         <EmailBody :html="email.bodyHtml" :text="email.bodyText" />
       </div>
     </article>

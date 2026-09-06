@@ -31,7 +31,7 @@ const avatarLetter = computed(() => (senderName.value || '?').trim().charAt(0).t
         </div>
         <p class="mt-0.5 truncate text-sm" :class="email.isRead ? 'text-slate-600' : 'font-medium text-slate-800'">{{ email.subject || '(tanpa subjek)' }}</p>
         <p v-if="email.snippet" class="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">{{ email.snippet }}</p>
-        <OtpHighlight v-if="email.extractedCode" :code="email.extractedCode" class="mt-2" />
+        <OtpHighlight :code="email.extractedCode" :subject="email.subject" :text="email.snippet" :interactive="false" class="mt-2" />
       </div>
     </RouterLink>
 

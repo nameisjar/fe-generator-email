@@ -8,14 +8,13 @@ const props = defineProps({
 });
 
 const mode = ref(props.html ? 'original' : 'text');
-const allowRemoteImages = ref(false);
 const frame = ref(null);
 const frameHeight = ref(320);
 let resizeObserver = null;
 let resizeTimer = null;
 
 const preparedEmail = computed(() => {
-  if (!props.html) return { srcdoc: '', remoteImageCount: 0 };
+  if (!props.html) return '';
 
   const clean = DOMPurify.sanitize(props.html, {
     USE_PROFILES: { html: true },
@@ -25,8 +24,6 @@ const preparedEmail = computed(() => {
   });
 
   const documentNode = new DOMParser().parseFromString(clean, 'text/html');
-  let remoteImageCount = 0;
-
   documentNode.querySelectorAll('a[href]').forEach((link) => {
     link.setAttribute('target', '_blank');
     link.setAttribute('rel', 'noopener noreferrer nofollow');
@@ -35,15 +32,8 @@ const preparedEmail = computed(() => {
   documentNode.querySelectorAll('img').forEach((image) => {
     const source = image.getAttribute('src') || '';
     if (/^(?:https?:)?\/\//i.test(source)) {
-      remoteImageCount += 1;
-      if (!allowRemoteImages.value) {
-        image.setAttribute('data-blocked-src', source);
-        image.removeAttribute('src');
-        image.setAttribute('hidden', '');
-      } else {
-        image.setAttribute('loading', 'lazy');
-        image.setAttribute('referrerpolicy', 'no-referrer');
-      }
+      image.setAttribute('loading', 'lazy');
+      image.setAttribute('referrerpolicy', 'no-referrer');
     }
   });
 
@@ -52,17 +42,12 @@ const preparedEmail = computed(() => {
   const embeddedStyles = Array.from(documentNode.head.querySelectorAll('style'))
     .map((style) => style.outerHTML)
     .join('');
-  const imageSources = allowRemoteImages.value
-    ? "https: http: data: blob:"
-    : "data: blob:";
-  const fontSources = allowRemoteImages.value ? "data: https:" : "data:";
-
   const srcdoc = `<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${imageSources}; style-src 'unsafe-inline'; font-src ${fontSources}; connect-src 'none'; media-src 'none'; frame-src 'none';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: http: data: blob:; style-src 'unsafe-inline'; font-src data: https:; connect-src 'none'; media-src 'none'; frame-src 'none';">
     <base target="_blank">
     ${embeddedStyles}
     <style>
@@ -81,7 +66,7 @@ const preparedEmail = computed(() => {
   </body>
 </html>`;
 
-  return { srcdoc, remoteImageCount };
+  return srcdoc;
 });
 
 function resizeFrame() {
@@ -126,23 +111,17 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <div v-if="html || text" class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div v-if="html && text" class="inline-flex self-start rounded-xl bg-slate-100 p-1" role="tablist" aria-label="Mode tampilan email">
+    <div v-if="html && text" class="mb-4">
+      <div class="inline-flex self-start rounded-xl bg-slate-100 p-1" role="tablist" aria-label="Mode tampilan email">
         <button class="rounded-lg px-3 py-1.5 text-xs font-semibold transition" :class="mode === 'original' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'" role="tab" :aria-selected="mode === 'original'" @click="setMode('original')">Tampilan asli</button>
         <button class="rounded-lg px-3 py-1.5 text-xs font-semibold transition" :class="mode === 'text' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'" role="tab" :aria-selected="mode === 'text'" @click="setMode('text')">Teks sederhana</button>
-      </div>
-
-      <div v-if="mode === 'original' && preparedEmail.remoteImageCount" class="flex items-center gap-2 self-start rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-        <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 17 9 12l4 4 2-2 5 5M5 21h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2Zm11-13h.01"/></svg>
-        <span>{{ preparedEmail.remoteImageCount }} gambar eksternal {{ allowRemoteImages ? 'ditampilkan' : 'diblokir' }}</span>
-        <button class="font-semibold underline underline-offset-2" @click="allowRemoteImages = !allowRemoteImages">{{ allowRemoteImages ? 'Sembunyikan' : 'Tampilkan' }}</button>
       </div>
     </div>
 
     <div v-if="mode === 'original' && html" class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 p-2 sm:p-4">
       <iframe
         ref="frame"
-        :srcdoc="preparedEmail.srcdoc"
+        :srcdoc="preparedEmail"
         :style="{ height: `${frameHeight}px` }"
         class="block w-full rounded-xl bg-white"
         sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
